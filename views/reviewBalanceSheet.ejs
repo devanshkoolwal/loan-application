@@ -1,0 +1,100 @@
+<%- include('./partials/header') %>
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h2 class="text-center mb-4">Business Loan Details</h2>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td><strong>Business Name:</strong></td>
+              <td><%= businessData.businessName %></td>
+            </tr>
+            <tr>
+              <td><strong>Year:</strong></td>
+              <td><%= businessData.yearEstablished %></td>
+            </tr>
+            <tr>
+              <td><strong>Loan Amount:</strong></td>
+              <td><%= businessData.loanAmount %></td>
+            </tr>
+            <tr>
+              <td><strong>Accounting Software:</strong></td>
+              <td><%= businessData.accountingSoftware %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h2 class="text-center mb-4">Balance Sheet</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Month</th>
+              <th>Profit/Loss</th>
+              <th>Assets Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% balanceSheet.forEach(function(row){ %>
+                <% if(row.profitOrLoss < 0){ %> 
+                    <tr class="table-danger">
+                    <td><%= row.year %></td>
+                    <td><%= row.month %></td>
+                    <td><%= row.profitOrLoss %></td>
+                    <td><%= row.assetsValue %></td>
+                    </tr>
+                <% } else {%>
+                    <tr>
+                        <td><%= row.year %></td>
+                        <td><%= row.month %></td>
+                        <td><%= row.profitOrLoss %></td>
+                        <td><%= row.assetsValue %></td>
+                    </tr>
+                <% } %>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <form id="submitApplication" style="text-align: center;" >
+    <button class="btn btn-primary btn-lg" type="submit">Submit Application</button>
+  </form>
+  <script>
+    let formElem = document.querySelector("#submitApplication");
+    
+    formElem.onsubmit =  async (e) => {
+        e.preventDefault();
+        var payload = {
+          balanceSheet : <%-  JSON.stringify(balanceSheet) %>,
+          businessData : <%-  JSON.stringify(businessData) %>
+        }
+        fetch('/submit-application', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers:{'content-type': 'application/json'}
+        }).then(result => result.json())
+        .then(data => {
+            if(data.success){
+              window.alert('Succesfully Updated');
+              window.location.href='/';
+            }
+             
+        })
+    };
+  </script>
+  
+
+<%- include('./partials/footer') %>

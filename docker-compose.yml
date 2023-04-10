@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  loan_svc:
+    image: localhost/loan:latest
+    restart: unless-stopped
+    container_name: loan_srv
+    networks:
+      - loan
+    ports:
+      - "8000:8000"
+networks:
+  loan:
+    driver: bridge
